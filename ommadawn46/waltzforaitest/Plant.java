@@ -1,4 +1,4 @@
-package ommadawn46.ichalletest;
+package ommadawn46.waltzforaitest;
 
 
 public class Plant extends Entity{
@@ -9,7 +9,13 @@ public class Plant extends Entity{
 	}
 
 	@Override
-	public void update() {
+	public void update(boolean isDrawn) {
+		if(isDrawn){
+			draw();
+		}
+	}
+	
+	private void draw(){
 		applet.fill(0, 200, 0, 20);
 		applet.ellipse(x, y, size, size);
 		applet.fill(r, g, b, 150);
