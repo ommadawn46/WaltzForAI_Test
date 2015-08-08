@@ -7,29 +7,30 @@ public class Animal extends Entity{
 	private float speed;
 	private double direction;
 	private Entity target;
-	private int eaten;
 
-	public Animal(WaltzForAITest applet) {
-		super(applet);
+	public Animal(WaltzForAITest applet, int energy) {
+		super(applet, energy);
 		range = size * 5;
 		speed = 30 / size;
 
 		direction = Math.random()*2*Math.PI;
 		target = null;
-		eaten = 0;
 	}
 
 	@Override
-	public void update(boolean isDrawn) {
+	public void update() {
 		searchTargetAndCollisionDetection();
 		changeDirection();
 		move();
-		if(isDrawn){
-			draw();
+		energy--;
+		applet.plusEnergy(1);
+		if(energy <= 0){
+			applet.dieEntity(this);
 		}
 	}
 
-	private void draw(){
+	@Override
+	public void draw(){
 		if(target != null){
 			applet.stroke(0);
 			applet.line(x, y, target.getX(), target.getY());
@@ -42,7 +43,7 @@ public class Animal extends Entity{
 		applet.ellipse(x, y, size, size);
 		applet.fill(100, 0, 0, 255);
 		applet.ellipse(x, y, 10, 10);
-		applet.text(eaten, x, y-20);
+		applet.text(energy, x, y-20);
 	}
 
 	private void changeDirection(){
@@ -93,7 +94,8 @@ public class Animal extends Entity{
 	}
 
 	private void eat(Entity entity){
-		eaten++;
+		energy += entity.getEnergy();
+		entity.setEnergy(0);
 		applet.dieEntity(entity);
 	}
 }

@@ -9,9 +9,10 @@ public abstract class Entity {
 	protected static final float maxSize = 50;
 	protected float size;
 	protected float r, g, b;
+	protected int energy;
 	protected boolean alive;
 
-	public Entity(WaltzForAITest applet){
+	public Entity(WaltzForAITest applet, int energy){
 		this.applet = applet;
 
 		size = (float)(Math.random()*(maxSize-minSize)+minSize);
@@ -23,6 +24,8 @@ public abstract class Entity {
 		g = (float)(Math.random()*200)+55;
 		b = (float)(Math.random()*200)+55;
 
+		this.energy = energy;
+		
 		alive = true;
 	}
 
@@ -33,10 +36,13 @@ public abstract class Entity {
 		alive = false;
 	}
 
-	public abstract void update(boolean isDrawn);
+	public abstract void update();
+	public abstract void draw();
 
-	public float getX(){return x;};
-	public float getY(){return y;};
-	public float getMaxSize(){return maxSize;};
-	public float getSize(){return size;};
+	public float getX(){return x;}
+	public float getY(){return y;}
+	public float getMaxSize(){return maxSize;}
+	public float getSize(){return size;}
+	public int getEnergy(){return energy;}
+	public void setEnergy(int energy){this.energy = energy;}
 }
