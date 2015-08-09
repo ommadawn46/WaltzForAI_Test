@@ -23,9 +23,9 @@ public class WaltzForAITest extends PApplet{
 	public static void main(String args[]){
 		PApplet.main(new String[] { "--present", "ommadawn46.waltzforaitest.WaltzForAITest" });
 	}
-	
+
 	public WaltzForAITest(){
-		basePos = new PVector(0, 0);
+		basePos = new PVector();
 		dragPos = new PVector();
 		dragging = false;
 		scale = 1f;
@@ -40,12 +40,14 @@ public class WaltzForAITest extends PApplet{
 	@Override
 	public void setup(){
 		size(displayWidth, displayHeight);
+		basePos.set(0, 0);
+
 		noStroke();
 		while(energy > 0){
 			int spend = (int)(Math.random()*80+20);
-			entityList.add(new Plant(this, spend)); 
+			entityList.add(new Plant(this, spend));
 			energy -= spend;
-			
+
 			spend = (int)(Math.random()*3200+2000);
 			entityList.add(new Animal(this, spend));
 			energy -= spend;
@@ -55,27 +57,27 @@ public class WaltzForAITest extends PApplet{
 	@Override
 	public void draw(){
 		long b = System.nanoTime();
-		
+
 		for(int i = 0; i < updateSpeed; i++){
 			update();
 		}
 		drawDisplayArea();
-		
+
 		System.out.println(System.nanoTime() - b);
 	}
-	
+
 	private void update(){
 		for(int i = 0; i < 10; i++){
 			if(energy > 0){
 				int spend = (int)(Math.random()*80+20);
-				entityList.add(new Plant(this, spend)); 
+				entityList.add(new Plant(this, spend));
 				energy -= spend;
 			}else{
 				break;
 			}
 		}
 		gridWorld.update(entityList);
-		
+
 		List<Entity> updateList = new ArrayList<Entity>(entityList);
 		for(Entity entity: updateList){
 			if(entity.isAlive()){
@@ -83,21 +85,21 @@ public class WaltzForAITest extends PApplet{
 			}
 		}
 	}
-	
+
 	private void drawDisplayArea(){
 		background(255);
-		
+
 		scale(scale);
 		pushMatrix();
 		moveDisplayArea();
-		
+
 		stroke(0);
 		line(0, 0, worldWidth, 0);
 		line(worldWidth, 0, worldWidth, worldHeight);
 		line(worldWidth, worldHeight, 0, worldHeight);
 		line(0, worldHeight, 0, 0);
 		noStroke();
-		
+
 		for(Entity entity: entityList){
 			if(withinDisplayArea(entity)){
 				entity.draw();
@@ -105,43 +107,43 @@ public class WaltzForAITest extends PApplet{
 		}
 		popMatrix();
 		scale(1/scale);
-		
+
 		fill(0);
 		text(String.format("(%.0f,%.0f)  Speed x%d  Zoom x%.2f", basePos.x, basePos.y, updateSpeed, scale), 10, 20);
 	}
-	
+
 	private void moveDisplayArea(){
 		if(dragging){
 			basePos.add((mouseX - dragPos.x)/scale, (mouseY - dragPos.y)/scale, 0);
 			dragPos.set(mouseX, mouseY);
 		}
-		translate(basePos.x, basePos.y);
+		translate(basePos.x+(displayWidth/2)/scale, basePos.y+(displayHeight/2)/scale);
 	}
-	
+
 	@Override
 	public void keyPressed(KeyEvent e){
 		switch(e.getKeyCode()){
 		case UP: scale += 0.01; break;
-		case DOWN: scale = scale <= 0.01f ? 0.01f : scale-0.01f; break;
+		case DOWN: scale = scale <= 0.02f ? 0.01f : scale-0.01f; break;
 		case LEFT: updateSpeed = updateSpeed <= 0 ? 0 : updateSpeed-1; break;
 		case RIGHT: updateSpeed++; break;
-		}		
+		}
 	}
-	
+
 	@Override
 	public void mousePressed(MouseEvent e){
 		dragging = true;
 		dragPos.set(e.getX(), e.getY());
 	}
-	
+
 	@Override
 	public void mouseReleased(MouseEvent e){
 		dragging = false;
 	}
-	
+
 	private boolean withinDisplayArea(Entity entity){
-		if(0 <= basePos.x+entity.getX()+entity.getSize()/2 && basePos.x+entity.getX()-entity.getSize()/2 <= displayWidth/scale &&
-				0 <= basePos.y+entity.getY()+entity.getSize()/2 && basePos.y+entity.getY()-entity.getSize()/2 <= displayHeight/scale){
+		if(0 <= basePos.x+(displayWidth/2)/scale+entity.getX()+entity.getSize()/2 && basePos.x+entity.getX()-entity.getSize()/2 <= (displayWidth/2)/scale &&
+				0 <= basePos.y+(displayHeight/2)/scale+entity.getY()+entity.getSize()/2 && basePos.y+entity.getY()-entity.getSize()/2 <= (displayHeight/2)/scale){
 			return true;
 		}
 		return false;
