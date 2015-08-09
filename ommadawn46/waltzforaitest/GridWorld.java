@@ -4,17 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GridWorld {
-	WaltzForAITest applet;
+	EntityControl entityControl;
 	private int gridWidth, gridHeight;
 	private final int maxWidth, maxHeight;
 	private List<List<List<Entity>>> cluster;
 
-	public GridWorld(WaltzForAITest applet, int gridWidth, int gridHeight){
-		this.applet = applet;
+	public GridWorld(EntityControl entityControl, int gridWidth, int gridHeight){
+		this.entityControl = entityControl;
 		this.gridWidth = gridWidth;
 		this.gridHeight = gridHeight;
-		maxWidth = (int)(applet.getWorldWidth()/gridWidth);
-		maxHeight = (int)(applet.getWorldHeight()/gridHeight);
+		maxWidth = (int)(entityControl.getWorldWidth()/gridWidth);
+		maxHeight = (int)(entityControl.getWorldHeight()/gridHeight);
 
 		cluster = new ArrayList<List<List<Entity>>>(maxWidth+1);
 		for(int i = 0; i <= maxWidth; i++){
@@ -26,8 +26,8 @@ public class GridWorld {
 		}
 	}
 
-	public GridWorld(WaltzForAITest applet){
-		this(applet, 150, 150);
+	public GridWorld(EntityControl entityControl){
+		this(entityControl, 150, 150);
 	}
 
 	public List<Entity> searchEntityInArea(float x, float y, float range){

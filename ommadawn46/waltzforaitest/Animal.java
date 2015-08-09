@@ -8,8 +8,8 @@ public class Animal extends Entity{
 	private double direction;
 	private Entity target;
 
-	public Animal(WaltzForAITest applet, int energy) {
-		super(applet, energy);
+	public Animal(WaltzForAITest applet, EntityControl entityControl, int energy) {
+		super(applet, entityControl, energy);
 		range = size * 5;
 		speed = 30 / size;
 
@@ -23,9 +23,9 @@ public class Animal extends Entity{
 		changeDirection();
 		move();
 		energy--;
-		applet.plusEnergy(1);
+		entityControl.plusEnergy(1);
 		if(energy <= 0){
-			applet.dieEntity(this);
+			entityControl.dieEntity(this);
 		}
 	}
 
@@ -51,9 +51,9 @@ public class Animal extends Entity{
 			direction = Util.getRadian(x, y, target.getX(), target.getY());
 		}else if(y < size/2){
 			direction = Math.random()*Math.PI;
-		}else if(applet.getWorldWidth() < x + size/2){
+		}else if(entityControl.getWorldWidth() < x + size/2){
 			direction = Math.random()*Math.PI+Math.PI/2;
-		}else if(applet.getWorldHeight() < y + size/2){
+		}else if(entityControl.getWorldHeight() < y + size/2){
 			direction = Math.random()*Math.PI+Math.PI;
 		}else if(x < size/2){
 			direction = Math.random()*Math.PI+Math.PI*3/2;
@@ -74,7 +74,7 @@ public class Animal extends Entity{
 
 		float minDistance = range;
 
-		List<Entity> entities = applet.getGridWorld().searchEntityInArea(x, y, range);
+		List<Entity> entities = entityControl.getGridWorld().searchEntityInArea(x, y, range);
 		for(Entity entity: entities){
 			float distance = Util.getDistance(x, y, entity.getX(), entity.getY());
 			if(distance < range/2 + entity.getSize()/2){
@@ -96,6 +96,6 @@ public class Animal extends Entity{
 	private void eat(Entity entity){
 		energy += entity.getEnergy();
 		entity.setEnergy(0);
-		applet.dieEntity(entity);
+		entityControl.dieEntity(entity);
 	}
 }

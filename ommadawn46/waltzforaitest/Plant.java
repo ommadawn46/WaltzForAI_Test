@@ -3,8 +3,8 @@ package ommadawn46.waltzforaitest;
 
 public class Plant extends Entity{
 	private float visualSize;
-	public Plant(WaltzForAITest applet, int energy) {
-		super(applet, energy);
+	public Plant(WaltzForAITest applet, EntityControl entityControl, int energy) {
+		super(applet, entityControl,  energy);
 		size = 30 * energy/60;
 		visualSize = (float)(size / Math.sqrt(2));
 	}
@@ -12,7 +12,7 @@ public class Plant extends Entity{
 	@Override
 	public void update() {
 	}
-	
+
 	@Override
 	public void draw(){
 		applet.fill(0, 200, 0, 20);

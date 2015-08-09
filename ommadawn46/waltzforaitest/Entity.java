@@ -3,6 +3,7 @@ package ommadawn46.waltzforaitest;
 
 public abstract class Entity {
 	protected WaltzForAITest applet;
+	protected EntityControl entityControl;
 	protected float x;
 	protected float y;
 	protected static final float minSize = 10;
@@ -12,20 +13,21 @@ public abstract class Entity {
 	protected int energy;
 	protected boolean alive;
 
-	public Entity(WaltzForAITest applet, int energy){
+	public Entity(WaltzForAITest applet, EntityControl entityControl, int energy){
 		this.applet = applet;
+		this.entityControl = entityControl;
 
 		size = (float)(Math.random()*(maxSize-minSize)+minSize);
-		
-		x = (float)(Math.random()*(applet.getWorldWidth()-size))+size/2;
-		y = (float)(Math.random()*(applet.getWorldHeight()-size))+size/2;
+
+		x = (float)(Math.random()*(entityControl.getWorldWidth()-size))+size/2;
+		y = (float)(Math.random()*(entityControl.getWorldHeight()-size))+size/2;
 
 		r = (float)(Math.random()*200)+55;
 		g = (float)(Math.random()*200)+55;
 		b = (float)(Math.random()*200)+55;
 
 		this.energy = energy;
-		
+
 		alive = true;
 	}
 
