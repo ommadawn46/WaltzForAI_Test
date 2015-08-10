@@ -1,5 +1,6 @@
 package ommadawn46.waltzforaitest;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,14 +26,18 @@ public class EntityControl extends Thread {
 		suspended = false;
 		running = true;
 
-		while(energy > 0){
+		while(this.energy > 0){
 			int spend = (int)(Math.random()*80+20);
 			entityList.add(new Plant(applet, this, spend));
-			energy -= spend;
+			this.energy -= spend;
 
 			spend = (int)(Math.random()*3200+2000);
-			entityList.add(new Animal(applet, this, spend));
-			energy -= spend;
+			entityList.add(new Herbivore(applet, this, spend));
+			this.energy -= spend;
+
+			spend = (int)(Math.random()*3200+2000);
+			entityList.add(new Carnivore(applet, this, spend));
+			this.energy -= spend;
 		}
 
 		applet.setEntityList(entityList);
@@ -67,8 +72,8 @@ public class EntityControl extends Thread {
 		  	if (sleepTime < 0){
 		  		sleepTime = 0;
 		  	}
-		  	oldTime = newTime;
 
+		  	oldTime = newTime;
 		  	try {
 		  		Thread.sleep(sleepTime >> 16);
 		  	} catch (InterruptedException e) {
@@ -80,15 +85,6 @@ public class EntityControl extends Thread {
 	}
 
 	private void update(){
-		for(int i = 0; i < 10; i++){
-			if(energy > 0){
-				int spend = (int)(Math.random()*80+20);
-				entityList.add(new Plant(applet, this, spend));
-				energy -= spend;
-			}else{
-				break;
-			}
-		}
 		gridWorld.update(entityList);
 
 		List<Entity> updateList = new ArrayList<Entity>(entityList);
@@ -98,6 +94,37 @@ public class EntityControl extends Thread {
 			if(entity.isAlive()){
 				entity.update();
 			}
+		}
+	}
+
+	public void energyDrop(Entity entity, int amount){
+		entity.subEnergy(amount);
+		energy += amount;
+		if(energy > 0 && (int)(Math.random()*50) == 0){
+			int spend = (int)(Math.random()*80+20);
+			float spawnX = entity.getX()+(int)(Math.random()*400)-200;
+			float spawnY = entity.getY()+(int)(Math.random()*400)-200;
+			entityList.add(new Plant(applet, this, spawnX, spawnY, -1, spend));
+			energy -= spend;
+		}
+	}
+
+	public <T extends Animal> void crossEntity(T e1, T e2){
+		if(!e1.getClass().equals(e2.getClass()) || !e1.canCross() || !e2.canCross()){
+			return;
+		}
+		int babyEnagy = Math.min(e1.getEnergy(), e2.getEnergy())/3;
+		e1.subEnergy(babyEnagy);
+		e2.subEnergy(babyEnagy);
+		e1.resetAge();
+		e2.resetAge();
+		try {
+			entityList.add(e1.getClass().getConstructor(WaltzForAITest.class, EntityControl.class, float.class, float.class, float.class, int.class).
+			newInstance(applet, this, (e1.getX()+e2.getX())/2, (e1.getY()+e2.getY())/2, (e1.getSize()+e2.getSize())/2, babyEnagy*2));
+		} catch (InstantiationException | IllegalAccessException
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -123,8 +150,8 @@ public class EntityControl extends Thread {
 	public void plusGameSpeed(){fps++;}
 	public void minusGameSpeed(){fps = fps <= 1 ? 1 : fps-1;}
 	public double getGameSpeed(){return fps/60.0;}
+	public int getEnergy(){return energy;}
 	public float getWorldWidth(){return worldWidth;}
 	public float getWorldHeight(){return worldHeight;}
 	public boolean isSuspended(){return suspended;}
-	public void plusEnergy(int plusEnergy){energy += plusEnergy;}
 }

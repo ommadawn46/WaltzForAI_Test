@@ -46,14 +46,20 @@ public class WaltzForAITest extends PApplet{
 		moveDisplayArea();
 
 		stroke(0);
-		line(0, 0, entityControl.getWorldWidth(), 0);
-		line(entityControl.getWorldHeight(), 0, entityControl.getWorldWidth(), entityControl.getWorldHeight());
-		line(entityControl.getWorldWidth(), entityControl.getWorldHeight(), 0, entityControl.getWorldHeight());
-		line(0, entityControl.getWorldHeight(), 0, 0);
+		noFill();
+		rect(0, 0, entityControl.getWorldWidth(), entityControl.getWorldHeight());
 		noStroke();
 
-		List<Entity> drawList = new ArrayList<Entity>(entityList);
-		for(Entity entity: drawList){
+		int plantNum = 0, herbivoreNum = 0, carnivoreNum = 0, energySum = entityControl.getEnergy();
+		for(Entity entity: entityList){
+			if(entity instanceof Plant){
+				plantNum++;
+			}else if(entity instanceof Herbivore){
+				herbivoreNum++;
+			}else{
+				carnivoreNum++;
+			}
+			energySum += entity.getEnergy();
 			if(withinDisplayArea(entity)){
 				entity.draw();
 			}
@@ -64,6 +70,11 @@ public class WaltzForAITest extends PApplet{
 		fill(0);
 		text(String.format("(%.0f,%.0f)  Speed x%.2f  Zoom x%.2f"+(entityControl.isSuspended()?"  SUSPENDED":""),
 				basePos.x, basePos.y, entityControl.getGameSpeed(), scale), 10, 20);
+		text(String.format("RemainEnergy: %d", entityControl.getEnergy()), 10, 40);
+		text(String.format("AllEnergy: %d", energySum), 10, 60);
+		text(String.format("Plant: %d", plantNum), 10, 80);
+		text(String.format("Herbivore: %d", herbivoreNum), 10, 100);
+		text(String.format("Carnivore: %d", carnivoreNum), 10, 120);
 	}
 
 	private void moveDisplayArea(){
@@ -97,8 +108,10 @@ public class WaltzForAITest extends PApplet{
 	}
 
 	private boolean withinDisplayArea(Entity entity){
-		if(0 <= basePos.x+(displayWidth/2)/scale+entity.getX()+entity.getSize()/2 && basePos.x+entity.getX()-entity.getSize()/2 <= (displayWidth/2)/scale &&
-				0 <= basePos.y+(displayHeight/2)/scale+entity.getY()+entity.getSize()/2 && basePos.y+entity.getY()-entity.getSize()/2 <= (displayHeight/2)/scale){
+		float scaledWidth = (displayWidth/2)/scale+entity.getSize()/2;
+		float scaledHeight = (displayHeight/2)/scale+entity.getSize()/2;
+		if(-scaledWidth <= basePos.x+entity.getX() && basePos.x+entity.getX() <= scaledWidth &&
+				-scaledHeight <= basePos.y+entity.getY() && basePos.y+entity.getY() <= scaledHeight){
 			return true;
 		}
 		return false;
