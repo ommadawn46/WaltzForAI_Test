@@ -3,24 +3,26 @@ package ommadawn46.waltzforaitest;
 import java.util.List;
 
 public class Carnivore extends Animal {
-	int rank;
-
-	public Carnivore(WaltzForAITest applet, EntityControl entityControl, float x, float y, float size,
-			int energy) {
-		super(applet, entityControl, x, y, size, energy);
+	public Carnivore(WaltzForAITest applet, EntityControl entityControl, 
+			float x, float y, float size, int energy, Animal[] parents) {
+		super(applet, entityControl, x, y, size, energy, parents);
+		fov = Math.PI / 4;
 		speed *= 2;
-		rank = (int)this.size / 10;
 	}
 
 	public Carnivore(WaltzForAITest applet, EntityControl entityControl, int energy) {
-		this(applet, entityControl, -1, -1, -1, energy);
+		this(applet, entityControl, -1, -1, -1, energy, new Animal[]{null, null});
 	}
 
 	@Override
 	public void draw() {
+		if(target != null){
+			applet.stroke(0);
+			applet.line(x, y, target.getX(), target.getY());
+		}
 		applet.noStroke();
 		applet.fill(200, 200, 0, 10);
-		applet.arc(x, y, range, range, (float)(direction-Math.PI/4), (float)(direction+Math.PI/4));
+		applet.arc(x, y, range, range, (float)(direction-fov), (float)(direction+fov));
 		applet.fill(200, 0, 0, 20);
 		applet.ellipse(x, y, size, size);
 		applet.fill(r, g, b, 150);
@@ -30,7 +32,6 @@ public class Carnivore extends Animal {
 		applet.fill(200, 0, 0, 255);
 		applet.ellipse(x, y, 10, 10);
 		applet.text(energy, x, y-20);
-		applet.text(rank, x+20, y);
 		if(canCross()) applet.fill(0, 0, 100, 255);
 		applet.text(age, x, y+30);
 	}
@@ -53,27 +54,28 @@ public class Carnivore extends Animal {
 		double minTargetDist, minFriendDist, minEnemyDist;
 		minTargetDist = minFriendDist = minEnemyDist = range/2 + Entity.maxSize/2;
 
-
 		List<Entity> entities = entityControl.getGridWorld().searchEntityInArea(x, y, range);
 		for(Entity entity: entities){
 			double distance = Util.getDistance(x, y, entity.getX(), entity.getY());
-			if(distance < range/2 + entity.getSize()/2 &&
-					Math.abs(Util.getRadianSub(direction, Util.getRadian(x, y, entity.getX(), entity.getY()))) < Math.PI/4){
-				if(entity instanceof Herbivore || (entity instanceof Carnivore && ((Carnivore)entity).getRank() < rank)){
+			if(Util.inFieldOfView(this, entity)){
+				boolean isCarnivore, isRelated = false;
+				if(isCarnivore = entity instanceof Carnivore){
+					isRelated = entityControl.isRelatedSpecies(this, (Carnivore)entity);
+				}
+				if(entity instanceof Herbivore || 
+						(isCarnivore && !isRelated && entity.getEnergy() < energy)){
 					if(distance < minTargetDist){
 						target = entity;
 						minTargetDist = distance;
 					}
 				}
-				if(entity instanceof Carnivore && !entity.equals(this)){
-					if(rank < ((Carnivore)entity).getRank() && distance < minEnemyDist){
+				if(isCarnivore && !entity.equals(this)){
+					if(!isRelated && distance < minEnemyDist && energy < entity.getEnergy()){
 						enemy = entity;
 						minEnemyDist = distance;
-					}else if(rank == ((Carnivore)entity).getRank() && canCross() && ((Carnivore)entity).canCross()){
-						if(distance < minFriendDist){
-							friend = (Carnivore)entity;
-							minFriendDist = distance;
-						}
+					}else if(isRelated && distance < minFriendDist && canCross() && ((Carnivore)entity).canCross()){
+						friend = (Carnivore)entity;
+						minFriendDist = distance;
 					}
 				}
 				if(distance < size/2 + entity.getSize()/2){
@@ -86,6 +88,4 @@ public class Carnivore extends Animal {
 			}
 		}
 	}
-
-	public int getRank(){return rank;}
 }

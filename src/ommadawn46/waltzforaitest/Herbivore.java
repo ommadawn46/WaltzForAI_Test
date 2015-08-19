@@ -4,21 +4,22 @@ import java.util.List;
 
 public class Herbivore extends Animal {
 
-	public Herbivore(WaltzForAITest applet, EntityControl entityControl, float x, float y, float size,
-			int energy) {
-		super(applet, entityControl, x, y, size, energy);
+	public Herbivore(WaltzForAITest applet, EntityControl entityControl, 
+			float x, float y, float size, int energy, Animal[] parents) {
+		super(applet, entityControl, x, y, size, energy, parents);
+		fov = Math.PI*2 / 3;
 		range *= 2;
 	}
 
 	public Herbivore(WaltzForAITest applet, EntityControl entityControl, int energy) {
-		this(applet, entityControl, -1, -1, -1, energy);
+		this(applet, entityControl, -1, -1, -1, energy, new Animal[]{null, null});
 	}
 
 	@Override
 	public void draw(){
 		applet.noStroke();
 		applet.fill(200, 200, 0, 10);
-		applet.ellipse(x, y, range, range);
+		applet.arc(x, y, range, range, (float)(direction-fov), (float)(direction+fov));
 		applet.fill(r, g, b, 150);
 		applet.ellipse(x, y, size, size);
 		applet.fill(100, 0, 0, 255);
@@ -49,7 +50,7 @@ public class Herbivore extends Animal {
 		List<Entity> entities = entityControl.getGridWorld().searchEntityInArea(x, y, range);
 		for(Entity entity: entities){
 			double distance = Util.getDistance(x, y, entity.getX(), entity.getY());
-			if(distance < range/2 + entity.getSize()/2){
+			if(Util.inFieldOfView(this, entity)){
 				if(entity instanceof Plant){
 					if(distance < minTargetDist){
 						target = entity;

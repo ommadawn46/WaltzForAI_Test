@@ -3,28 +3,33 @@ package ommadawn46.waltzforaitest;
 
 public abstract class Animal extends Entity{
 	protected float range;
+	protected double fov;
 	protected float speed;
 	protected double direction;
 	protected int age;
+	protected Animal[] parents;
 	protected Entity target;
 	protected Animal friend;
 	protected Entity enemy;
 
-	public Animal(WaltzForAITest applet, EntityControl entityControl, float x, float y, float size, int energy) {
+	public Animal(WaltzForAITest applet, EntityControl entityControl, 
+			float x, float y, float size, int energy, Animal[] parents) {
 		super(applet, entityControl, x, y, size, energy);
+		fov = Math.PI;
 		range = this.size * 5;
 		speed = 30 / this.size;
 
 		direction = Math.random()*2*Math.PI;
 		age = 0;
 
+		this.parents = parents;
 		target = null;
 		friend = null;
 		enemy = null;
 	}
 
 	public Animal(WaltzForAITest applet, EntityControl entityControl, int energy) {
-		this(applet, entityControl, -1, -1, -1, energy);
+		this(applet, entityControl, -1, -1, -1, energy, new Animal[]{null, null});
 	}
 
 	@Override
@@ -82,4 +87,9 @@ public abstract class Animal extends Entity{
 		entity.setEnergy(0);
 		entityControl.dieEntity(entity);
 	}
+	
+	public Animal[] getParents(){return parents;}
+	public double getDirection(){return direction;}
+	public float getRange(){return range;}
+	public double getFOV(){return fov;}
 }

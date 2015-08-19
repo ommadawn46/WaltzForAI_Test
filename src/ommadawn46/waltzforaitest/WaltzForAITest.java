@@ -50,7 +50,7 @@ public class WaltzForAITest extends PApplet{
 		rect(0, 0, entityControl.getWorldWidth(), entityControl.getWorldHeight());
 		noStroke();
 
-		int plantNum = 0, herbivoreNum = 0, carnivoreNum = 0, energySum = entityControl.getEnergy();
+		int plantNum = 0, herbivoreNum = 0, carnivoreNum = 0;
 		for(Entity entity: entityList){
 			if(entity instanceof Plant){
 				plantNum++;
@@ -59,7 +59,6 @@ public class WaltzForAITest extends PApplet{
 			}else{
 				carnivoreNum++;
 			}
-			energySum += entity.getEnergy();
 			if(withinDisplayArea(entity)){
 				entity.draw();
 			}
@@ -70,11 +69,10 @@ public class WaltzForAITest extends PApplet{
 		fill(0);
 		text(String.format("(%.0f,%.0f)  Speed x%.2f  Zoom x%.2f"+(entityControl.isSuspended()?"  SUSPENDED":""),
 				basePos.x, basePos.y, entityControl.getGameSpeed(), scale), 10, 20);
-		text(String.format("RemainEnergy: %d", entityControl.getEnergy()), 10, 40);
-		text(String.format("AllEnergy: %d", energySum), 10, 60);
-		text(String.format("Plant: %d", plantNum), 10, 80);
-		text(String.format("Herbivore: %d", herbivoreNum), 10, 100);
-		text(String.format("Carnivore: %d", carnivoreNum), 10, 120);
+		text(String.format("FPS: %.1f", entityControl.getFPS()), 10, 40);
+		text(String.format("Plant: %d", plantNum), 10, 60);
+		text(String.format("Herbivore: %d", herbivoreNum), 10, 80);
+		text(String.format("Carnivore: %d", carnivoreNum), 10, 100);
 	}
 
 	private void moveDisplayArea(){

@@ -6,7 +6,7 @@ public class Plant extends Entity{
 
 	public Plant(WaltzForAITest applet, EntityControl entityControl, float x, float y, float size, int energy) {
 		super(applet, entityControl, x, y, size, energy);
-		this.size = 30 * this.energy/60;
+		this.size = 50 * this.energy/1000;
 		visualSize = (float)(this.size / Math.sqrt(2));
 	}
 
