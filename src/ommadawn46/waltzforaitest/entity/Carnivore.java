@@ -1,6 +1,11 @@
-package ommadawn46.waltzforaitest;
+package ommadawn46.waltzforaitest.entity;
 
 import java.util.List;
+
+import ommadawn46.waltzforaitest.EntityControl;
+import ommadawn46.waltzforaitest.Herbivore;
+import ommadawn46.waltzforaitest.Util;
+import ommadawn46.waltzforaitest.WaltzForAITest;
 
 public class Carnivore extends Animal {
 	public Carnivore(WaltzForAITest applet, EntityControl entityControl, 
@@ -22,13 +27,13 @@ public class Carnivore extends Animal {
 		}
 		applet.noStroke();
 		applet.fill(200, 200, 0, 10);
-		applet.arc(x, y, range, range, (float)(direction-fov), (float)(direction+fov));
+		applet.arc(x, y, range*2, range*2, (float)(direction-fov), (float)(direction+fov));
 		applet.fill(200, 0, 0, 20);
-		applet.ellipse(x, y, size, size);
+		applet.ellipse(x, y, size*2, size*2);
 		applet.fill(r, g, b, 150);
-		applet.triangle((float)(x+size/1.8*Math.cos(direction)), (float)(y+size/1.8*Math.sin(direction)),
-				(float)(x+size/2.2*Math.cos(direction+Math.PI*2/3)), (float)(y+size/2.2*Math.sin(direction+Math.PI*2/3)),
-				(float)(x+size/2.2*Math.cos(direction-Math.PI*2/3)), (float)(y+size/2.2*Math.sin(direction-Math.PI*2/3)));
+		applet.triangle((float)(x+size/0.9*Math.cos(direction)), (float)(y+size/0.9*Math.sin(direction)),
+				(float)(x+size/1.1*Math.cos(direction+Math.PI*2/3)), (float)(y+size/1.1*Math.sin(direction+Math.PI*2/3)),
+				(float)(x+size/1.1*Math.cos(direction-Math.PI*2/3)), (float)(y+size/1.1*Math.sin(direction-Math.PI*2/3)));
 		applet.fill(200, 0, 0, 255);
 		applet.ellipse(x, y, 10, 10);
 		applet.text(energy, x, y-20);
@@ -39,20 +44,20 @@ public class Carnivore extends Animal {
 	@Override
 	protected void searchEntityAndCollisionDetection() {
 		if(target != null &&
-				(!target.isAlive() || range/2 + target.getSize()/2 < Util.getDistance(x, y, target.getX(), target.getY()))){
+				(!target.isAlive() || range + target.getSize() < Util.getDistance(x, y, target.getX(), target.getY()))){
 			target = null;
 		}
 		if(friend != null &&
-				(!friend.isAlive() || !friend.canCross() || range/2 + friend.getSize()/2 < Util.getDistance(x, y, friend.getX(), friend.getY()))){
+				(!friend.isAlive() || !friend.canCross() || range + friend.getSize() < Util.getDistance(x, y, friend.getX(), friend.getY()))){
 			friend = null;
 		}
 		if(enemy != null &&
-				(!enemy.isAlive() || range/2 + enemy.getSize()/2 < Util.getDistance(x, y, enemy.getX(), enemy.getY()))){
+				(!enemy.isAlive() || range + enemy.getSize() < Util.getDistance(x, y, enemy.getX(), enemy.getY()))){
 			enemy = null;
 		}
 
 		double minTargetDist, minFriendDist, minEnemyDist;
-		minTargetDist = minFriendDist = minEnemyDist = range/2 + Entity.maxSize/2;
+		minTargetDist = minFriendDist = minEnemyDist = range + Entity.maxSize;
 
 		List<Entity> entities = entityControl.getGridWorld().searchEntityInArea(x, y, range);
 		for(Entity entity: entities){
@@ -78,7 +83,7 @@ public class Carnivore extends Animal {
 						minFriendDist = distance;
 					}
 				}
-				if(distance < size/2 + entity.getSize()/2){
+				if(distance < size + entity.getSize()){
 					if(entity.equals(target)){
 						eat(entity);
 					}else if(entity.equals(friend)){

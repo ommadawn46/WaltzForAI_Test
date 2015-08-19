@@ -1,5 +1,8 @@
 package ommadawn46.waltzforaitest;
 
+import ommadawn46.waltzforaitest.entity.Animal;
+import ommadawn46.waltzforaitest.entity.Entity;
+
 public class Util {
 	private Util(){	}
 
@@ -21,13 +24,13 @@ public class Util {
 	
 	public static boolean inFieldOfView(Animal subject, Entity object){
 		float sx = subject.getX(), sy = subject.getY();
-		float ox = object.getX(), oy = object.getY(), os = object.getSize()/2;
+		float ox = object.getX(), oy = object.getY(), os = object.getSize();
 		double distance = getDistance(sx, sy, ox, oy);
 		if(distance < os){
 			return true;
 		}
 		
-		float sr = subject.getRange()/2;
+		float sr = subject.getRange();
 		double direction = subject.getDirection(), fov = subject.getFOV();
 		if(distance < sr+os && Math.abs(getRadianSub(direction, getRadian(sx, sy, ox, oy))) < fov){
 			return true;

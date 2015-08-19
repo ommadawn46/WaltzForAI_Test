@@ -1,9 +1,13 @@
-package ommadawn46.waltzforaitest;
+package ommadawn46.waltzforaitest.entity;
+
+import ommadawn46.waltzforaitest.EntityControl;
+import ommadawn46.waltzforaitest.Util;
+import ommadawn46.waltzforaitest.WaltzForAITest;
 
 
 public abstract class Animal extends Entity{
-	protected float range;
-	protected double fov;
+	protected float range; // 視野の半径
+	protected double fov; // 視野の角度
 	protected float speed;
 	protected double direction;
 	protected int age;
@@ -16,7 +20,7 @@ public abstract class Animal extends Entity{
 			float x, float y, float size, int energy, Animal[] parents) {
 		super(applet, entityControl, x, y, size, energy);
 		fov = Math.PI;
-		range = this.size * 5;
+		range = this.size * 2.5f;
 		speed = 30 / this.size;
 
 		direction = Math.random()*2*Math.PI;
@@ -50,13 +54,13 @@ public abstract class Animal extends Entity{
 	}
 
 	private void changeDirection(){
-		if(y < size/2){
+		if(y < size){
 			direction = Math.random()*Math.PI;
-		}else if(entityControl.getWorldWidth() < x + size/2){
+		}else if(entityControl.getWorldWidth() < x + size){
 			direction = Math.random()*Math.PI+Math.PI/2;
-		}else if(entityControl.getWorldHeight() < y + size/2){
+		}else if(entityControl.getWorldHeight() < y + size){
 			direction = Math.random()*Math.PI+Math.PI;
-		}else if(x < size/2){
+		}else if(x < size){
 			direction = Math.random()*Math.PI+Math.PI*3/2;
 		}else if(enemy != null){
 			direction = Util.getRadian(enemy.getX(), enemy.getY(), x, y);

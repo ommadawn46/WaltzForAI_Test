@@ -1,4 +1,7 @@
-package ommadawn46.waltzforaitest;
+package ommadawn46.waltzforaitest.entity;
+
+import ommadawn46.waltzforaitest.EntityControl;
+import ommadawn46.waltzforaitest.WaltzForAITest;
 
 
 public abstract class Entity {
@@ -6,9 +9,9 @@ public abstract class Entity {
 	protected EntityControl entityControl;
 	protected float x;
 	protected float y;
-	protected static final float minSize = 10;
-	protected static final float maxSize = 50;
-	protected float size;
+	public static final float minSize = 10;
+	public static final float maxSize = 50;
+	protected float size; // 本体の半径
 	protected float r, g, b;
 	protected int energy;
 	protected boolean alive;
@@ -22,12 +25,12 @@ public abstract class Entity {
 			this.size = (float)(Math.random()*(maxSize-minSize)+minSize);
 		}
 		this.x = x;
-		if(this.x < this.size/2 || entityControl.getWorldWidth() - this.size/2 < this.x){
-			this.x = (float)(Math.random()*(entityControl.getWorldWidth()-this.size))+this.size/2;
+		if(this.x < maxSize || entityControl.getWorldWidth() - maxSize < this.x){
+			this.x = (float)(Math.random()*(entityControl.getWorldWidth()-maxSize*2))+maxSize;
 		}
 		this.y = y;
-		if(this.y < this.size/2 || entityControl.getWorldHeight() - this.size/2 < this.y){
-			this.y = (float)(Math.random()*(entityControl.getWorldHeight()-this.size))+this.size/2;
+		if(this.y < maxSize || entityControl.getWorldHeight() - maxSize < this.y){
+			this.y = (float)(Math.random()*(entityControl.getWorldHeight()-maxSize*2))+maxSize;
 		}
 
 		r = (float)(Math.random()*200)+55;
@@ -55,7 +58,6 @@ public abstract class Entity {
 
 	public float getX(){return x;}
 	public float getY(){return y;}
-	public float getMaxSize(){return maxSize;}
 	public float getSize(){return size;}
 	public int getEnergy(){return energy;}
 	public void setEnergy(int energy){this.energy = energy;}

@@ -6,6 +6,11 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
+import ommadawn46.waltzforaitest.entity.Animal;
+import ommadawn46.waltzforaitest.entity.Carnivore;
+import ommadawn46.waltzforaitest.entity.Entity;
+import ommadawn46.waltzforaitest.entity.Plant;
+
 public class EntityControl extends Thread {
 	private WaltzForAITest applet;
 	private GridWorld gridWorld;
@@ -137,7 +142,7 @@ public class EntityControl extends Thread {
 		Animal[] parents = new Animal[]{e1, e2};
 		try {
 			entityList.add(e1.getClass().getConstructor(WaltzForAITest.class, EntityControl.class, float.class, float.class, float.class, int.class, Animal[].class).
-			newInstance(applet, this, (e1.getX()+e2.getX())/2, (e1.getY()+e2.getY())/2, (e1.getSize()+e2.getSize())/2, babyEnagy*2, parents));
+			newInstance(applet, this, (e1.getX()+e2.getX())/2, (e1.getY()+e2.getY())/2, e1.getSize()+e2.getSize(), babyEnagy*2, parents));
 		} catch (InstantiationException | IllegalAccessException
 				| IllegalArgumentException | InvocationTargetException
 				| NoSuchMethodException | SecurityException e) {

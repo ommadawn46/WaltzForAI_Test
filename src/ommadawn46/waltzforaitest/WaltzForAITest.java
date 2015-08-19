@@ -3,6 +3,8 @@ package ommadawn46.waltzforaitest;
 import java.util.ArrayList;
 import java.util.List;
 
+import ommadawn46.waltzforaitest.entity.Entity;
+import ommadawn46.waltzforaitest.entity.Plant;
 import processing.core.PApplet;
 import processing.core.PVector;
 import processing.event.KeyEvent;
@@ -106,8 +108,8 @@ public class WaltzForAITest extends PApplet{
 	}
 
 	private boolean withinDisplayArea(Entity entity){
-		float scaledWidth = (displayWidth/2)/scale+entity.getSize()/2;
-		float scaledHeight = (displayHeight/2)/scale+entity.getSize()/2;
+		float scaledWidth = (displayWidth/2)/scale+entity.getSize();
+		float scaledHeight = (displayHeight/2)/scale+entity.getSize();
 		if(-scaledWidth <= basePos.x+entity.getX() && basePos.x+entity.getX() <= scaledWidth &&
 				-scaledHeight <= basePos.y+entity.getY() && basePos.y+entity.getY() <= scaledHeight){
 			return true;

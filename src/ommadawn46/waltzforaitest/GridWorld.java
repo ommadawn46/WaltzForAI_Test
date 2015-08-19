@@ -3,6 +3,8 @@ package ommadawn46.waltzforaitest;
 import java.util.ArrayList;
 import java.util.List;
 
+import ommadawn46.waltzforaitest.entity.Entity;
+
 public class GridWorld {
 	EntityControl entityControl;
 	private int gridWidth, gridHeight;
@@ -33,7 +35,7 @@ public class GridWorld {
 	public List<Entity> searchEntityInArea(float x, float y, float range){
 		int gridX = (int)(x/gridWidth), gridY = (int)(y/gridHeight);
 
-		double radius = (range+Entity.maxSize)/2.0;
+		double radius = range + Entity.maxSize;
 		int verticalOver = (int)(radius / gridWidth) + 1;
 		int horizontalOver = (int)(radius / gridHeight) + 1;
 
