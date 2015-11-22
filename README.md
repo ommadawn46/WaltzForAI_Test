@@ -1,5 +1,6 @@
 # WaltzForAI_Test
-WaltzForAI サンプルプログラム
+WaltzForAI サンプルプログラム  
+完成品は[こちら](https://github.com/kobasemi/ichalle-goo)
 
 ## 操作方法
 
